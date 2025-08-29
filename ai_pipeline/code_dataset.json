@@ -1,0 +1,10 @@
+[
+    {
+        "code": "import pandas as pd\ndf = pd.read_csv('file.csv')",
+        "label": "Data Processing"
+    },
+    {
+        "code": "from starlette.requests import HTTPConnection as HTTPConnection",
+        "label": "Web/API Code"
+    }  
+]

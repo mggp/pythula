@@ -1,0 +1,11 @@
+fastapi==0.116.1
+annotated-types==0.7.0
+email-validator==2.3.0
+fastapi==0.116.1
+httpx==0.28.1
+Jinja2==3.1.6
+pydantic==2.11.7
+pydantic_core==2.33.2
+python-dotenv==1.1.1
+starlette==0.47.3
+uvicorn==0.35.0
