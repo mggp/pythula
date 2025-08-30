@@ -1,10 +1,158 @@
 [
-    {
-        "code": "import pandas as pd\ndf = pd.read_csv('file.csv')",
-        "label": "Data Processing"
-    },
-    {
-        "code": "from starlette.requests import HTTPConnection as HTTPConnection",
-        "label": "Web/API Code"
-    }  
+  {
+    "code": "def _debug_dummy_plot(taxonomy: Taxonomy, htmlfile: Filename, scoring: Scoring=Scoring.SHEL):\n\"\"\"\nGenerate dummy Krona plot via Krona 2.0 XML spec and exit\n\"\"\"\nprint(gray(f'Generating dummy Krona plot {htmlfile}...'), end='')\nsys.stdout.flush()\nsamples: List[Sample] = [Sample('SINGLE')]\nkrona: KronaTree = KronaTree(samples, min_score=Score(35), max_score=Score(100), scoring=scoring)\npolytree: MultiTree = MultiTree(samples=samples)\npolytree.grow(ontology=taxonomy)\npolytree.toxml(ontology=taxonomy, krona=krona)\nkrona.tohtml(htmlfile, pretty=True)\nprint(green('OK!'))",
+    "label": "Data Processing"
+  },
+  {
+    "code": "def validate_input(path):\n\"\"\"Validate input file is either: fasta, fastq, or sam alignement file.\npath(str): path to input file\n\"\"\"\nsam_pysam = None\ntry:\nsam_pysam = pysam.AlignmentFile(path)\nexcept (ValueError, OSError):\npass\nif sam_pysam:\nreturn\n(fasta_rd, fastq_rd) = (None, None)\ntry:\nfasta_rd = SeqIO.to_dict(SeqIO.parse(path, 'fasta'))\nfastq_rd = SeqIO.to_dict(SeqIO.parse(path, 'fastq'))\nexcept (UnicodeDecodeError, ValueError):\npass\nif not (fasta_rd or fastq_rd):\nraise TypeError('Input must be in desired format: fasta or fastq')",
+    "label": "Data Processing"
+  },
+  {
+    "code": "def tensor_id(tensor) -> Any:\n\"\"\"Returns a unique identifier for this Tensor.\"\"\"\nreturn tensor._id",
+    "label": "Data Processing"
+  },
+  {
+    "code": "def _check_download_targets(targets):\n\"\"\"An internal function for downloading JASPAR if no target database is set.\"\"\"\nif targets is None:\ntargets = __file__.replace('ttl', '')\ntargets += 'JASPAR2024_CORE_non-redundant_pfms_jaspar.meme'\nf = 'https://jaspar.elixir.no/download/data/2024/CORE/JASPAR2024_CORE_non-redundant_pfms_meme.txt'\nif not os.path.isfile(targets):\nprint('Downloading {}...'.format(f))\nos.system('wget -O {} {}'.format(targets, f))\nreturn targets",
+    "label": "Data Processing"
+  },
+  {
+    "code": "def create_csv_helper(path, org, csv_dest=None):\n\"\"\"Helper function for creating csv reports\"\"\"\nif csv_dest == None:\ncsv_dest = path\nlogs = mkdata.create_org_logs(path)\nfilename = '%s.csv' % org\nfilename_full_path = os.path.join(csv_dest, filename)\nclick.echo('Created CSV file Of Github Commits: %s' % filename_full_path)\nmkdata.log_to_csv(filename_full_path, logs)",
+    "label": "Data Processing"
+  },
+  {
+    "code": "def extract_memory_value(line):\n\"\"\"Extracts the memory value from a line.\"\"\"\nmatch = re.search('Total:\\\\s+(\\\\d+\\\\.\\\\d+)', line)\nreturn float(match.group(1)) if match else None",
+    "label": "Data Processing"
+  },
+  {
+    "code": "class CmdError(Exception):\ndef __init__(self, msg, exitcode, stderr):\nself.exitcode = exitcode\nself.stderr = stderr\nsuper().__init__(msg)",
+    "label": "Data Processing"
+  },
+  {
+    "code": "def main():\ncommon.debug_print('** RUN **')\nos.chdir(os.path.dirname(__file__))\nargs = parse_args()\ncommon.set_swift_branch(args.swift_branch)\nworkspace = common.private_workspace('.')\nif not args.skip_clone:\ncommon.clone_repos(swift_branch=args.swift_branch)\nif not args.skip_build:\nbuild_swift_toolchain(workspace, args)\nadditional_runner_args = []\nif args.clang_source_path or args.clang:\nclang = args.clang\nif args.clang_source_path:\nclang = build_clang(workspace, args)\nif clang:\nadditional_runner_args = ['--clang', clang]\nif not args.skip_runner:\nif args.test_incremental:\nexecute_build_incremental(workspace, args, additional_runner_args)\nelse:\nexecute_runner(workspace, args, additional_runner_args)\nreturn 0",
+    "label": "Data Processing"
+  },
+  {
+    "code": "class MyForm(FlaskForm):\nemail = StringField('Email', validators=[InputRequired()])\npassword = PasswordField('Password', validators=[InputRequired()])\ntextarea = TextAreaField('Textarea')\nradios = RadioField('Radios', default='option1', choices=[('option1', 'Option one is this'), ('option2', 'Option 2 can be something else')])\nselects = SelectField('Select', choices=[('1', '1'), ('2', '2'), ('3', '3')])",
+    "label": "Web/API Code"
+  },
+  {
+    "code": "@app.route('/')\ndef hello_world():\nreturn 'Hello World!'",
+    "label": "Web/API Code"
+  },
+  {
+    "code": "async def connect_to_db(app: FastAPI) -> None:\n\"\"\"\nConnect to all databases.\n\"\"\"\napp.state.databases = {}\nfor database in config.DATABASES.items():\napp.state.databases[f'{database[0]}_pool'] = await asyncpg.create_pool(dsn=f\"postgres://{database[1]['username']}:{database[1]['password']}@{database[1]['host']}:{database[1]['port']}/{database[0]}\", min_size=1, max_size=10, max_queries=50000, max_inactive_connection_lifetime=300, timeout=180)",
+    "label": "Web/API Code"
+  },
+  {
+    "code": "@app.get('/', response_class=HTMLResponse)\nasync def index(request: Request):\nreturn templates.TemplateResponse('index.html', {'request': request})",
+    "label": "Web/API Code"
+  },
+  {
+    "code": "class NullContextmanager(contextlib.AbstractContextManager[None]):\ndef __init__(self, *args, **kwargs) -> None:\npass\ndef __enter__(self) -> None:\npass\ndef __exit__(self, type_arg, value_arg, traceback_arg) -> bool:\nreturn False",
+    "label": "Web/API Code"
+  },
+  {
+    "code": "def run_command_line():\nparsed_args = sys.argv[1:]\nremaining_args = []\nif '---' in sys.argv:\nseparator_index = sys.argv.index('---')\nparsed_args = sys.argv[1:separator_index]\nremaining_args = sys.argv[separator_index + 1:]\n_parser.set_defaults(remaining_args=remaining_args)\nargs = _parser.parse_args(parsed_args)\nif not hasattr(args, 'func'):\nsys.stderr.write('error: pass a command before ---, such as `coz run --- $CMD`\\n')\n_parser.print_help()\nsys.exit(1)\nargs.func(args)",
+    "label": "Web/API Code"
+  },
+  {
+    "code": "def die(msg):\nprint('\\nError: %s' % msg)\nif simulator:\nsimulator.stop()\nsys.exit(0)",
+    "label": "Web/API Code"
+  },
+  {
+    "code": "def grey(s):\nreturn '\\x1b[1;30m%s\\x1b[0m' % s",
+    "label": "Web/API Code"
+  },
+  {
+    "code": "class Recursion:\ndef gcd(self, a, b):\nif b == 0:\nreturn a\nreturn self.gcd(b, a % b)\ndef lcm(self, a, b):\nreturn abs(a * b) // self.gcd(a, b)\ndef factorial(self, a):\nif a == 0:\nreturn 1\nreturn a * self.factorial(a - 1)\ndef fibonacci(self, n):\nif n <= 1:\nreturn n\nreturn self.fibonacci(n - 1) + self.fibonacci(n - 2)\ndef sum_of_digits(self, n):\nif n == 0:\nreturn 0\nreturn n % 10 + self.sum_of_digits(n // 10)\ndef sqrt(self, n):\ny = n\nz = (y + n / y) / 2\nwhile abs(y - z) >= 1e-05:\ny = z\nz = (y + n / y) / 2\nreturn z\ndef power(self, a, b):\nif b == 0:\nreturn 1\nreturn a * self.power(a, b - 1)\ndef cube_of_even(self, n):\nL = []\nfor i in range(n + 1):\nif i % 2 == 0:\nL.append(i ** 3)\nx = sorted(set(L))\nreturn x",
+    "label": "Algorithms/Logic"
+  },
+  {
+    "code": "def file_extension(path):\nreturn os.path.splitext(path)[1]",
+    "label": "Algorithms/Logic"
+  },
+  {
+    "code": "def sign(username: str, key: str, file: str):\n\"\"\"\nSign a file using the specified GitHub username and SSH key.\nThis function creates a WMAP-formatted, signed version of the input file.\nParameters:\n- username: The GitHub username of the file's author\n- key: Path to the SSH private key of the author\n- file: Path to the file being signed\nOutput:\n- Creates a new file named '{file}.wmap' containing the signed message.\nNote: The public key corresponding to the private key must be installed on\nthe author's GitHub account.\n\"\"\"\nprofile = Profile(username)\nprivate_key = PrivateKey(profile, key)\nprivate_key.sign(file)\nmessage = Message.from_signed_file(profile, file)\nmessage.dump(file + '.wmap')\nos.remove(file + '.sig')",
+    "label": "Algorithms/Logic"
+  },
+  {
+    "code": "def _as_graph_element(obj):\n\"\"\"Convert `obj` to a graph element if possible, otherwise return `None`.\nArgs:\nobj: Object to convert.\nReturns:\nThe result of `obj._as_graph_element()` if that method is available;\notherwise `None`.\n\"\"\"\nconv_fn = getattr(obj, '_as_graph_element', None)\nif conv_fn and callable(conv_fn):\nreturn conv_fn()\nreturn None",
+    "label": "Algorithms/Logic"
+  },
+  {
+    "code": "def is_dense_tensor_like(t) -> bool:\nreturn isinstance(t, core_tf_types.Tensor)",
+    "label": "Algorithms/Logic"
+  },
+  {
+    "code": "def die(msg='', exitcode=1):\nif msg:\nprint(msg, file=sys.stderr)\nsys.exit(exitcode)",
+    "label": "Algorithms/Logic"
+  },
+  {
+    "code": "def main(argv):\nparser = argparse.ArgumentParser(description='Create a High Dynamic Range photo from a set of fotos contained in a folder')\nparser.add_argument('-f', '--folder', help='the folder from which the images will be loaded', required=True)\nparser.add_argument('-o', '--output', help='the output file. Default: out.jpg', default='out.jpg')\nparser.add_argument('-b', '--blend', help='the blending factor used for creating the masks. Default: 0.5', default='0.5', type=float)\nparser.add_argument('-r', '--reverse', action='store_true', help='reverse the sorting direction')\nparser.add_argument('-d', '--debug', action='store_true', help='prints debug information during the process')\nparser.add_argument('-v', '--version', action='version', version='%(prog)s 1.0', help='output version information and exit')\nargs = parser.parse_args(argv)\nHDR(folder=args.folder, out=args.output, blend=args.blend, order=args.reverse, debug=args.debug)",
+    "label": "Algorithms/Logic"
+  },
+  {
+    "code": "def uid() -> int:\n\"\"\"A unique (within this program execution) integer.\"\"\"\nreturn pywrap_tfe.TFE_Py_UID()",
+    "label": "Algorithms/Logic"
+  },
+  {
+    "code": "def show_global_error_dialog(tb_str):\n\"\"\"\u69fd\u51fd\u6570 \u663e\u793a\u5bf9\u8bdd\u6846\u3002\"\"\"\nfrom videotrans.util.tools import show_error\nshow_error(tb_str)",
+    "label": "Machine Learning"
+  },
+  {
+    "code": "class MLP(nn.Module):\ndef __init__(self, in_features, hidden_features, num_classes):\nsuper(MLP, self).__init__()\nself.fc1 = nn.Linear(in_features, hidden_features)\nself.relu = nn.ReLU()\nself.fc2 = nn.Linear(hidden_features, num_classes)\ndef forward(self, x):\nx = x.reshape(batch_size, 28 * 28)\nx = self.fc1(x)\nx = self.relu(x)\nx = self.fc2(x)\nreturn x",
+    "label": "Machine Learning"
+  },
+  {
+    "code": "def plot_decision_boundary(pred_func):\n(x_min, x_max) = (X[:, 0].min() - 0.5, X[:, 0].max() + 0.5)\n(y_min, y_max) = (X[:, 1].min() - 0.5, X[:, 1].max() + 0.5)\nh = 0.01\n(xx, yy) = np.meshgrid(np.arange(x_min, x_max, h), np.arange(y_min, y_max, h))\nZ = pred_func(np.c_[xx.ravel(), yy.ravel()])\nZ = Z.reshape(xx.shape)\nplt.contourf(xx, yy, Z, cmap=plt.cm.Spectral)\nplt.scatter(X[:, 0], X[:, 1], c=y, cmap=plt.cm.Spectral)",
+    "label": "Machine Learning"
+  },
+  {
+    "code": "def _fit_single_estimator(estimator, X, y, sample_weight=None, message_clsname=None, message=None):\n\"\"\"Private function used to fit an estimator within a job.\"\"\"\nif sample_weight is not None:\ntry:\nwith _print_elapsed_time(message_clsname, message):\nestimator.fit(X, y, sample_weight=sample_weight)\nexcept TypeError as exc:\nif \"unexpected keyword argument 'sample_weight'\" in str(exc):\nraise TypeError('Underlying estimator {} does not support sample weights.'.format(estimator.__class__.__name__)) from exc\nraise\nelse:\nwith _print_elapsed_time(message_clsname, message):\nestimator.fit(X, y)\nreturn estimator",
+    "label": "Machine Learning"
+  },
+  {
+    "code": "def get_encoder(decoder):\nreturn dict(((x, i) for (i, x) in enumerate(decoder)))",
+    "label": "Machine Learning"
+  },
+  {
+    "code": "def print_pause(message):\nprint(message)\ntime.sleep(1.5)",
+    "label": "Machine Learning"
+  },
+  {
+      "code": "def _debug_dummy_plot(taxonomy: Taxonomy, htmlfile: Filename, scoring: Scoring=Scoring.SHEL):\n\"\"\"\nGenerate dummy Krona plot via Krona 2.0 XML spec and exit\n\"\"\"\nprint(gray(f'Generating dummy Krona plot {htmlfile}...'), end='')\nsys.stdout.flush()\nsamples: List[Sample] = [Sample('SINGLE')]\nkrona: KronaTree = KronaTree(samples, min_score=Score(35), max_score=Score(100), scoring=scoring)\npolytree: MultiTree = MultiTree(samples=samples)\npolytree.grow(ontology=taxonomy)\npolytree.toxml(ontology=taxonomy, krona=krona)\nkrona.tohtml(htmlfile, pretty=True)\nprint(green('OK!'))",
+      "label": "Data Processing"
+  },
+  {
+      "code": "def tensor_id(tensor) -> Any:\n\"\"\"Returns a unique identifier for this Tensor.\"\"\"\nreturn tensor._id",
+      "label": "Data Processing"
+  },
+  {
+      "code": "def create_csv_helper(path, org, csv_dest=None):\n\"\"\"Helper function for creating csv reports\"\"\"\nif csv_dest == None:\ncsv_dest = path\nlogs = mkdata.create_org_logs(path)\nfilename = '%s.csv' % org\nfilename_full_path = os.path.join(csv_dest, filename)\nclick.echo('Created CSV file Of Github Commits: %s' % filename_full_path)\nmkdata.log_to_csv(filename_full_path, logs)",
+      "label": "Data Processing"
+  },
+  {
+      "code": "class CmdError(Exception):\ndef __init__(self, msg, exitcode, stderr):\nself.exitcode = exitcode\nself.stderr = stderr\nsuper().__init__(msg)",
+      "label": "Data Processing"
+  },
+  {
+      "code": "class MyForm(FlaskForm):\nemail = StringField('Email', validators=[InputRequired()])\npassword = PasswordField('Password', validators=[InputRequired()])\ntextarea = TextAreaField('Textarea')\nradios = RadioField('Radios', default='option1', choices=[('option1', 'Option one is this'), ('option2', 'Option 2 can be something else')])\nselects = SelectField('Select', choices=[('1', '1'), ('2', '2'), ('3', '3')])",
+      "label": "Web/API Code"
+  },
+  {
+      "code": "async def connect_to_db(app: FastAPI) -> None:\n\"\"\"\nConnect to all databases.\n\"\"\"\napp.state.databases = {}\nfor database in config.DATABASES.items():\napp.state.databases[f'{database[0]}_pool'] = await asyncpg.create_pool(dsn=f\"postgres://{database[1]['username']}:{database[1]['password']}@{database[1]['host']}:{database[1]['port']}/{database[0]}\", min_size=1, max_size=10, max_queries=50000, max_inactive_connection_lifetime=300, timeout=180)",
+      "label": "Web/API Code"
+  },
+  {
+      "code": "class NullContextmanager(contextlib.AbstractContextManager[None]):\ndef __init__(self, *args, **kwargs) -> None:\npass\ndef __enter__(self) -> None:\npass\ndef __exit__(self, type_arg, value_arg, traceback_arg) -> bool:\nreturn False",
+      "label": "Web/API Code"
+  },
+  {
+      "code": "def die(msg):\nprint('\\nError: %s' % msg)\nif simulator:\nsimulator.stop()\nsys.exit(0)",
+      "label": "Web/API Code"
+  },
+  {
+      "code": "class Recursion:\ndef gcd(self, a, b):\nif b == 0:\nreturn a\nreturn self.gcd(b, a % b)\ndef lcm(self, a, b):\nreturn abs(a * b) // self.gcd(a, b)\ndef factorial(self, a):\nif a == 0:\nreturn 1\nreturn a * self.factorial(a - 1)\ndef fibonacci(self, n):\nif n <= 1:\nreturn n\nreturn self.fibonacci(n - 1) + self.fibonacci(n - 2)\ndef sum_of_digits(self, n):\nif n == 0:\nreturn 0\nreturn n % 10 + self.sum_of_digits(n // 10)\ndef sqrt(self, n):\ny = n\nz = (y + n / y) / 2\nwhile abs(y - z) >= 1e-05:\ny = z\nz = (y + n / y) / 2\nreturn z\ndef power(self, a, b):\nif b == 0:\nreturn 1\nreturn a * self.power(a, b - 1)\ndef cube_of_even(self, n):\nL = []\nfor i in range(n + 1):\nif i % 2 == 0:\nL.append(i ** 3)\nx = sorted(set(L))\nreturn x",
+      "label": "Algorithms/Logic"
+  }
 ]

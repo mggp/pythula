@@ -6,7 +6,7 @@ import ast
 import hashlib
 import os
 
-MAX_SNIPPETS_TO_FETCH_FROM_SOURCE = 5
+MAX_SNIPPETS_TO_FETCH_FROM_SOURCE = 1
 MAX_RETRIES_PER_SOURCE = 10
 
 GITHUB_TOKEN = os.environ["GITHUB_TOKEN"] if "GITHUB_TOKEN" in os.environ else None
@@ -43,9 +43,33 @@ def main():
                 print(f"GitHub error for keyword {tag}: {e}")
 
     print(f"\n✅ Total unique code snippets collected: {len(output_data)}")
+    
+    current_data, codes_in_current = get_current_data()
+    
+    update_current_data(output_data, current_data, codes_in_current)
 
-    with open("code_dataset.json", "w", encoding="utf-8") as f:
-        json.dump(output_data, f, indent=2)
+    write_to_output(current_data)
+
+def get_current_data():
+    current_data = []
+    codes_in_current = set()
+    try:
+        with open("code_dataset.json", "r", encoding="utf-8") as f:
+            current_data = json.load(f)
+            codes_in_current = {item["code"] for item in current_data}
+    except Exception:
+        pass
+
+    return current_data, codes_in_current
+
+def update_current_data(new_data, current_data, codes_in_current):
+    for item in new_data:
+        if item["code"] not in codes_in_current:
+            current_data.append(item)
+
+def write_to_output(data):
+    with open("code_dataset.json", "w", encoding="utf-8") as f:    
+        json.dump(data, f)
 
 def fetch_stackoverflow_code(tag, label, max_snippets=50):
     print(f"[StackOverflow] Scraping tag: {tag}")
@@ -84,7 +108,7 @@ def fetch_stackoverflow_code(tag, label, max_snippets=50):
                         return
                             
         page += 1
-        time.sleep(3)
+        time.sleep(10)
 
 def add_valid_snippets_from_tag(code, label):
     for snippet in extract_ast_snippets(code):
@@ -106,6 +130,7 @@ def fetch_github_code(keyword, label, max_snippets=50):
 
     while collected < max_snippets and attempts < MAX_RETRIES_PER_SOURCE:
         url = f"https://api.github.com/search/code?q={keyword}+language:python&per_page=30&page={page}"
+        print(" Searching page")
         r = requests.get(url, headers=HEADERS, timeout=10)
         if r.status_code != 200:
             print(f"GitHub API error: {r.status_code}")
@@ -115,6 +140,7 @@ def fetch_github_code(keyword, label, max_snippets=50):
         items = r.json().get("items", [])
         for item in items:
             raw_url = item["html_url"].replace("github.com", "raw.githubusercontent.com").replace("/blob/", "/")
+            print(" Fetching")
             raw_code = requests.get(raw_url, timeout=10)
             
             if raw_code.status_code != 200:
@@ -128,9 +154,11 @@ def fetch_github_code(keyword, label, max_snippets=50):
                 collected += 1
                 if collected >= max_snippets:
                     return
+            
+            time.sleep(3)
 
         page += 1
-        time.sleep(3)
+        time.sleep(1)
 
 def extract_ast_snippets(code):
     try:
