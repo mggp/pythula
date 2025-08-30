@@ -10,7 +10,8 @@
             "request": "launch",
             "program": "${file}",
             "console": "integratedTerminal",
-            "cwd": "${relativeFileDirname}"
-        }
+            "cwd": "${relativeFileDirname}",
+            "envFile": "${workspaceFolder}/ai_pipeline/.env"
+        },
     ]
 }
