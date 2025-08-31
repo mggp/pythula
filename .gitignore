@@ -42,3 +42,9 @@ next-env.d.ts
 
 # jupyter
 .ipynb_checkpoints
+
+__pycache__
+*.pyc
+
+classifier/learning_pipeline/data
+classifier/weights
